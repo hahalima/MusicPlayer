@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MusicPlayer</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="paused_text">Music paused</string>
+    <string name="playing_text">Music playing now!</string>
+</resources>
