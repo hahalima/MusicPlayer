@@ -7,7 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -17,6 +19,7 @@ public class MainActivity extends ActionBarActivity {
     private Button nextButton;
     private TextView musicText;
     private MediaPlayer mediaPlayer;
+    private SeekBar volumeBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,35 @@ public class MainActivity extends ActionBarActivity {
         previousButton = (Button) findViewById(R.id.previousButton);
         pausePlayButton = (Button) findViewById(R.id.pauseButton);
         nextButton = (Button) findViewById(R.id.nextButton);
+
+        volumeBar = (SeekBar) findViewById(R.id.volumeBar);
+
+        volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                System.out.println(seekBar.getProgress());
+                float currentVol = progress/50.0f;
+                if (progress == 0) {
+                    mediaPlayer.setVolume(0.0f, 0.0f);
+                }
+                else if (progress == seekBar.getMax()) {
+                    mediaPlayer.setVolume(1.0f, 1.0f);
+                }
+                else {
+                    mediaPlayer.setVolume(currentVol, currentVol);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +80,6 @@ public class MainActivity extends ActionBarActivity {
                 } else {
                     playAudio(mediaPlayer);
                 }
-                //change text
             }
         });
 
@@ -65,14 +96,18 @@ public class MainActivity extends ActionBarActivity {
             mediaPlayer.start();
             musicText.setText("Music playing now!");
             pausePlayButton.setBackground(getResources().getDrawable(R.drawable.media_pause));
+            mediaPlayer.setVolume(volumeBar.getProgress()/50.0f, volumeBar.getProgress()/50.0f);
         }
     }
 
     public void pauseAudio(MediaPlayer mediaPlayer) {
         if (mediaPlayer != null) {
+            int duration = (mediaPlayer.getCurrentPosition()/1000);
             mediaPlayer.pause();
             musicText.setText("Music paused");
             pausePlayButton.setBackground(getResources().getDrawable(R.drawable.play_media));
+            mediaPlayer.setVolume(volumeBar.getProgress() / 50.0f, volumeBar.getProgress() / 50.0f);
+            Toast.makeText(getApplicationContext(), "Duration was " + duration + "seconds", Toast.LENGTH_LONG).show();
         }
     }
 
